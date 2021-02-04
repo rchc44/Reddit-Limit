@@ -1,0 +1,39 @@
+body {
+	background: rgb(245,245,245);
+	font-size: 14px;
+	font-family: "Lato","Helvetica Neue","Helvetica","Arial","sans-serif";
+}
+header {
+	margin-top: 5em;
+	text-align: center;
+}
+
+h1 {
+	font-size: 3em;
+	font-weight: normal;
+	letter-spacing: 3px;
+	text-transform: uppercase;
+	background-color: #3A2F24;
+	border: none;
+	color: white;	
+	padding-top: 10px;
+	padding-bottom: 10px;
+
+	width: 60%;
+	margin: 0 auto;
+	border-radius: 40px;
+	margin-bottom: .7em;
+}
+
+#logo {
+	height:10em;
+
+}
+
+p {
+	text-align: center;
+	font-size: 14px;
+	font-weight: 550;
+	letter-spacing: .4px;
+	text-transform: uppercase;
+}

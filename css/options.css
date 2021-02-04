@@ -1,0 +1,51 @@
+body {
+	background: rgb(245,245,245);
+	font-size: 14px;
+	font-family: "Lato","Helvetica Neue","Helvetica","Arial","sans-serif";
+}
+header {
+	margin-top: 2.6em;
+	margin-left: 10em;
+	margin-bottom: 3em;
+}
+
+.container {
+	margin-left: 13em;
+}
+
+h1 {
+	font-size: 30px;
+	font-weight: normal;
+	letter-spacing: .1px;
+}
+
+h2 {
+	font-weight: 200;
+}
+
+#logo {
+	vertical-align: bottom;
+	margin-right: 15px;
+	margin-top: 10px;
+	height:48px;
+}
+
+input[type=text] {
+	border: 1px solid darkblue;
+	border-radius: 4px;
+	font-size: 20px;
+  }
+
+button {
+	background-color: #3A2F24;
+	border: none;
+	color: white;
+	padding: 8px 16px;
+	text-decoration: none;
+	margin: 4px 16px;
+	cursor: pointer;
+	border-radius: 8px;
+	font-size: 16px;
+	letter-spacing: 1.4px;
+  }
+  

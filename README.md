@@ -7,3 +7,6 @@ It resets automatically every day, or you can manually set time in options page.
 Maximum time limit of 720 minutes.
 
 ![plot](./chrome_webstore_img/1_full_timer.png)
+![plot](./chrome_webstore_img/2_1280x800_timer.png)
+![plot](./chrome_webstore_img/3_blocked.png)
+![plot](./chrome_webstore_img/4_options.png)

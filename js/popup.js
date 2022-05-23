@@ -1,11 +1,12 @@
 const timerDisplay = document.querySelector('.display__time-left');
 
+// runs code when popup.html opened by user clicking on extension icon
 document.addEventListener('DOMContentLoaded',function(e) {
-	// to get timeLeft when open popup
+	// gets timeLeft when open popup and displays in popup.html
 	chrome.runtime.sendMessage({msg:"sendTime"},function(response) {
 		if (response.timeLeft) displayTimeLeft(response.timeLeft);
 	});
-	// to receive updated time as popup left open
+	// receives updated time and updates popup.html timer if popup left open
 	chrome.runtime.onMessage.addListener(function(request,sender,sendResponse) {
 		if (request.msg == "updateTime") {
 			if (request.timeLeft) displayTimeLeft(request.timeLeft);
@@ -13,7 +14,9 @@ document.addEventListener('DOMContentLoaded',function(e) {
 	});	
 });
 
+
 function displayTimeLeft(seconds) {
+	// convert seconds to hh:mm:ss format
 	const hours = Math.floor(seconds/60/60);	
 	const minutes = Math.floor((seconds - (hours*60*60))/60);
 	const remainderSeconds = seconds % 60;

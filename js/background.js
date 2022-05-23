@@ -2,16 +2,22 @@ let countdown;
 let secondsLeft;
 const defaultTime = 60*60;
 
+
+// when app is first installed, this code opens options.html for user to set allowed amount of reddit time a day
 chrome.runtime.onInstalled.addListener(function (){
 	chrome.tabs.create({url:chrome.extension.getURL("html/options.html")},function(){});
 	chrome.storage.local.set({date: (new Date()).toDateString()});
 });
 
-// default time and date when first downloaded
+// gets default time and date when extension was first downloaded
 chrome.storage.local.get({timeLimit: defaultTime, timeLeft: defaultTime}, function(items) {
 	secondsLeft = items.timeLeft;
 });
 
+
+
+// runs when user resets timer from options.html
+// or sends remaining time
 chrome.runtime.onMessage.addListener(function(request,sender,sendResponse) {
 	if (request.msg == "resetTime") {
 		secondsLeft = request.timeLeft;
@@ -21,6 +27,7 @@ chrome.runtime.onMessage.addListener(function(request,sender,sendResponse) {
 	}
 });
 
+// runs when chrome tab is switched to
 chrome.tabs.onActivated.addListener(function(info) {
 	let newDate = (new Date()).toDateString();
 	chrome.storage.local.get({date: newDate,timeLeft:defaultTime,timeLimit:defaultTime}, function(items) {
@@ -39,6 +46,8 @@ chrome.tabs.onActivated.addListener(function(info) {
 	});	
 });
 
+// checks current tab url and starts timer if domain is reddit 
+// stops timer if domain is not reddit
 function onActivated(tabId) {
 	chrome.tabs.get(tabId, function(tab){
 		if (isReddit(tab.url)) startTimer();	
@@ -46,6 +55,7 @@ function onActivated(tabId) {
 	});
 }
 
+// runs when url of current tab is changed
 chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tabInfo) {
 	let newDate = (new Date()).toDateString();
 	chrome.storage.local.get({date: newDate,timeLeft:defaultTime,timeLimit:defaultTime}, function(items) {
@@ -64,6 +74,10 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tabInfo) {
 	});
 });
 
+
+// runs when url of tab is changed (i.e. user goes to new site on current tab)
+// if domain reddit, starts timer
+// else, stops timer 
 function onUpdated(changeInfo,tabInfo) {
 	if (tabInfo.active && changeInfo.url) {
 		if (isReddit(changeInfo.url)) startTimer();
@@ -71,6 +85,7 @@ function onUpdated(changeInfo,tabInfo) {
 	}
 }
 
+// runs when user changes windows
 chrome.windows.onFocusChanged.addListener(function(windowId) {
 	let newDate = (new Date()).toDateString();
 	chrome.storage.local.get({date: newDate,timeLeft:defaultTime,timeLimit:defaultTime}, function(items) {
@@ -89,6 +104,8 @@ chrome.windows.onFocusChanged.addListener(function(windowId) {
 	});	
 });
 
+
+// checks whether current site is reddit when user changes windows
 function onWindow(windowId) {
 	chrome.tabs.query({windowId, active:true},function(tabs) {
 		console.log('tabs',tabs, 'only on actibve window');
@@ -98,12 +115,14 @@ function onWindow(windowId) {
 	});
 }
 
+
 function timer(seconds) {
-	// time in milliseconds
+	// convert time to milliseconds
 	displayTimeLeft(secondsLeft);
 	if (!countdown) {
 		let now = Date.now(); 
 		let then = now + seconds * 1000;
+		
 		// every second, display amount of time left, use setInterval
 		countdown = setInterval(() => {
 			secondsLeft = Math.round((then - Date.now())/1000); // convert to seconds and round
@@ -111,10 +130,11 @@ function timer(seconds) {
 			chrome.runtime.sendMessage({msg:"updateTime",timeLeft:secondsLeft});
 			console.log(secondsLeft);
 			displayTimeLeft(secondsLeft);
+			
 			if (secondsLeft<=0) {     
 				clearInterval(countdown);
 				countdown = null;
-				blockYoutube();
+				blockSite();
 			}
 		},1000);
 	}
@@ -123,7 +143,7 @@ function timer(seconds) {
 function startTimer() {
 	chrome.storage.local.get({timeLeft:defaultTime},function(data) {
 		if (data.timeLeft>0) timer(data.timeLeft);
-		else blockYoutube();
+		else blockSite();
 	});
 }
 
@@ -149,10 +169,14 @@ function displayTimeLeft(seconds) {
 	chrome.browserAction.setBadgeText({text:display});
 }
 
-function blockYoutube() {
+
+// function that blocks reddit site and opens blocked.html 
+function blockSite() {
 	chrome.tabs.update(null,{url: "html/blocked.html"});
 }
 
+
+// checks if url contains reddit domain
 function isReddit(url) {
 	if (!url) return;
 	let urlObj = new URL(url);
@@ -160,6 +184,7 @@ function isReddit(url) {
 	return domain === "www.reddit.com" ? true:false;
 }
 
+// checks if new day started, to reset timer
 function isSameDay(date1,date2) {
 	return date1 === date2;
 }

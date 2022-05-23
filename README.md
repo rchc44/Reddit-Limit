@@ -6,3 +6,4 @@ This extension sets a timer for reddit use and locks you out once timer reaches 
 It resets automatically every day, or you can manually set time in options page. 
 Maximum time limit of 720 minutes.
 
+![plot](./chrome_webstore_img/1_full_timer.png)

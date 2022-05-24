@@ -1,3 +1,4 @@
+try {
 const form = document.querySelector("form[name='customForm']");
 const resetBtn = document.querySelector('.reset');
 const input = document.querySelector("input[type='text']");
@@ -51,3 +52,8 @@ function resetTime(mins) {
 	});	
 }
 
+}
+catch (e) {
+	console.log("Error:",e);
+
+}

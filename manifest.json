@@ -2,7 +2,7 @@
 	"name": "Reddit Limit",
 	"description": "This extension sets a timer for reddit use",
 	"version": "1.0.0",
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"icons": {
 		"128": "img/icon.png"
 	},

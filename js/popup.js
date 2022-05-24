@@ -1,3 +1,5 @@
+try {
+
 const timerDisplay = document.querySelector('.display__time-left');
 
 // runs code when popup.html opened by user clicking on extension icon
@@ -28,4 +30,11 @@ function displayTimeLeft(seconds) {
 			:
 		`${adjustedHours}:${adjustedMinutes}:${adjustedSeconds}`;
 	timerDisplay.textContent = display;
+}
+
+}
+
+catch (e) {
+	console.log("Error:",e);
+
 }

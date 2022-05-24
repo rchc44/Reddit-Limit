@@ -1,3 +1,5 @@
+try {
+
 let countdown;
 let secondsLeft;
 const defaultTime = 60*60;
@@ -187,4 +189,10 @@ function isReddit(url) {
 // checks if new day started, to reset timer
 function isSameDay(date1,date2) {
 	return date1 === date2;
+}
+
+}
+catch (e) {
+	console.log("Error:",e);
+
 }

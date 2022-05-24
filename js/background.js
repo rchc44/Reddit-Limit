@@ -7,7 +7,7 @@ const defaultTime = 60*60;
 
 // when app is first installed, this code opens options.html for user to set allowed amount of reddit time a day
 chrome.runtime.onInstalled.addListener(function (){
-	chrome.tabs.create({url:chrome.extension.getURL("html/options.html")},function(){});
+	chrome.tabs.create({url:chrome.runtime.getURL("html/options.html")},function(){});
 	chrome.storage.local.set({date: (new Date()).toDateString()});
 });
 
@@ -33,13 +33,15 @@ chrome.runtime.onMessage.addListener(function(request,sender,sendResponse) {
 chrome.tabs.onActivated.addListener(function(info) {
 	let newDate = (new Date()).toDateString();
 	chrome.storage.local.get({date: newDate,timeLeft:defaultTime,timeLimit:defaultTime}, function(items) {
+		/*
 		console.log('old',items.date);
 		console.log('new',newDate);
 		console.log('check same day',isSameDay(items.date,newDate));
+		*/
 		if (isSameDay(items.date,newDate)) {
 			onActivated(info.tabId);
 		} else {
-			console.log('reset time',secondsLeft,items.timeLimit);
+			// console.log('reset time',secondsLeft,items.timeLimit);
 			secondsLeft = items.timeLimit;
 			chrome.storage.local.set({date: newDate},function() {
 				onActivated(info.tabId);
@@ -61,13 +63,15 @@ function onActivated(tabId) {
 chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tabInfo) {
 	let newDate = (new Date()).toDateString();
 	chrome.storage.local.get({date: newDate,timeLeft:defaultTime,timeLimit:defaultTime}, function(items) {
+		/*
 		console.log('old',items.date);
 		console.log('new',newDate);
 		console.log('check same day',isSameDay(items.date,newDate));
+		*/
 		if (isSameDay(items.date,newDate)) {
 			onUpdated(changeInfo,tabInfo);
 		} else {
-			console.log('reset time',secondsLeft,items.timeLimit);
+			// console.log('reset time',secondsLeft,items.timeLimit);
 			secondsLeft = items.timeLimit;
 			chrome.storage.local.set({date: newDate},function() {
 				onUpdated(changeInfo,tabInfo);
@@ -90,14 +94,17 @@ function onUpdated(changeInfo,tabInfo) {
 // runs when user changes windows
 chrome.windows.onFocusChanged.addListener(function(windowId) {
 	let newDate = (new Date()).toDateString();
+	
 	chrome.storage.local.get({date: newDate,timeLeft:defaultTime,timeLimit:defaultTime}, function(items) {
+		/*
 		console.log('old',items.date);
 		console.log('new',newDate);
 		console.log('check same day',isSameDay(items.date,newDate));
+		*/
 		if (isSameDay(items.date,newDate)) {
 			onWindow(windowId);
 		} else {
-			console.log('reset time',secondsLeft,items.timeLimit);
+			//console.log('reset time',secondsLeft,items.timeLimit);
 			secondsLeft = items.timeLimit;
 			chrome.storage.local.set({date: newDate},function() {
 				onWindow(windowId);
@@ -110,10 +117,11 @@ chrome.windows.onFocusChanged.addListener(function(windowId) {
 // checks whether current site is reddit when user changes windows
 function onWindow(windowId) {
 	chrome.tabs.query({windowId, active:true},function(tabs) {
-		console.log('tabs',tabs, 'only on actibve window');
+		// console.log('tabs',tabs, 'only on actibve window');
 		let tab = tabs[0];
 		if (tab && !tab.pendingUrl && isReddit(tab.url)) startTimer();
 		else stopTimer();
+		
 	});
 }
 
@@ -130,7 +138,7 @@ function timer(seconds) {
 			secondsLeft = Math.round((then - Date.now())/1000); // convert to seconds and round
 			// check if we should stop it
 			chrome.runtime.sendMessage({msg:"updateTime",timeLeft:secondsLeft});
-			console.log(secondsLeft);
+			// console.log(secondsLeft);
 			displayTimeLeft(secondsLeft);
 			
 			if (secondsLeft<=0) {     
@@ -153,7 +161,7 @@ function stopTimer() {
 	clearInterval(countdown);
 	countdown = null;
 	chrome.storage.local.set({timeLeft:secondsLeft},function(){
-		chrome.browserAction.setBadgeText({text:""});
+		chrome.action.setBadgeText({text:""});
 	});
 }
 
@@ -168,7 +176,7 @@ function displayTimeLeft(seconds) {
 	const display = hours == 0 && minutes<60 ? `${adjustedMinutes}:${adjustedSeconds}`
 			:
 		`${adjustedHours}:${adjustedMinutes}:${adjustedSeconds}`;
-	chrome.browserAction.setBadgeText({text:display});
+	chrome.action.setBadgeText({text:display});
 }
 
 

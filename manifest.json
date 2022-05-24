@@ -10,9 +10,9 @@
 		"storage","tabs"
 	],
 	"background": {
-		"scripts": ["js/background.js"]
+		"service_worker": "js/background.js"
 	},
-	"browser_action": {
+	"action": {
 		"default_icon": "img/icon.png",
 		"default_popup":"html/popup.html",
 		"default_tooltip":"Limit your reddit time"

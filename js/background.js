@@ -8,7 +8,10 @@ const defaultTime = 60*60;
 // when app is first installed, this code opens options.html for user to set allowed amount of reddit time a day
 chrome.runtime.onInstalled.addListener(function (){
 	chrome.tabs.create({url:chrome.runtime.getURL("html/options.html")},function(){});
-	chrome.storage.local.set({date: (new Date()).toDateString()});
+	chrome.storage.local.set({date: (new Date()).toDateString()},function(){
+		sendResponse('whatever');
+	});
+	return true;
 });
 
 // gets default time and date when extension was first downloaded
@@ -27,6 +30,7 @@ chrome.runtime.onMessage.addListener(function(request,sender,sendResponse) {
 	} else if (request.msg == "sendTime") {
 		sendResponse({timeLeft:secondsLeft});
 	}
+	return true;
 });
 
 // runs when chrome tab is switched to
@@ -41,13 +45,15 @@ chrome.tabs.onActivated.addListener(function(info) {
 		if (isSameDay(items.date,newDate)) {
 			onActivated(info.tabId);
 		} else {
-			// console.log('reset time',secondsLeft,items.timeLimit);
+			//console.log('reset time',secondsLeft,items.timeLimit);
 			secondsLeft = items.timeLimit;
 			chrome.storage.local.set({date: newDate},function() {
 				onActivated(info.tabId);
+				sendResponse("whatever");
 			});
 		}
 	});	
+	return true;
 });
 
 // checks current tab url and starts timer if domain is reddit 
@@ -75,9 +81,11 @@ chrome.tabs.onUpdated.addListener(function(tabId,changeInfo,tabInfo) {
 			secondsLeft = items.timeLimit;
 			chrome.storage.local.set({date: newDate},function() {
 				onUpdated(changeInfo,tabInfo);
+				sendResponse("whatever");
 			});
 		}
 	});
+	return true;
 });
 
 
@@ -108,9 +116,11 @@ chrome.windows.onFocusChanged.addListener(function(windowId) {
 			secondsLeft = items.timeLimit;
 			chrome.storage.local.set({date: newDate},function() {
 				onWindow(windowId);
+				sendResponse("whatever");
 			});
 		}
-	});	
+	});
+return true;	
 });
 
 
@@ -162,7 +172,9 @@ function stopTimer() {
 	countdown = null;
 	chrome.storage.local.set({timeLeft:secondsLeft},function(){
 		chrome.action.setBadgeText({text:""});
+		sendResponse('whatever');
 	});
+	return true;
 }
 
 function displayTimeLeft(seconds) {
